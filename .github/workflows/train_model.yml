@@ -34,7 +34,7 @@ jobs:
     - name: Publish and trigger Sagemaker pipeline
       working-directory: ./pipelines
       run: |
-        python pipelines/run_pipeline.py \
+        python un_pipeline.py \
           -n showcase.pipeline \
           -r ${SAGEMAKER_EXECUTIONROLE_ARN} \
           -k "{\"region\": \"eu-west-1\", \"role\": \"${SAGEMAKER_EXECUTIONROLE_ARN}\"}"
