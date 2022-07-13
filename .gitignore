@@ -1,0 +1,8 @@
+# pycache
+__pycache__
+
+# pyenv
+.python-version
+
+# VS Code
+.vscode

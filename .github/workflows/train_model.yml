@@ -1,0 +1,43 @@
+name: train_model_on_sagemaker
+on:
+  push:
+    branches:
+    - main
+    - dev
+    paths-ignore:
+    - ".gitignore"
+    - "README.md"
+  workflow_dispatch:
+jobs:
+  publish_pipeline_and_train_model:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: eu-west-1
+    - name: Initialize Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8.13
+    - name: Install Python packages
+      working-directory: ./pipelines
+      run: |
+        python --version
+        python -m pip install --upgrade pip
+        python -m pip install -r requirements.txt
+    - name: Publish and trigger Sagemaker pipeline
+      working-directory: ./pipelines
+      run: |
+        python pipelines/run_pipeline.py \
+          -n showcase.pipeline \
+          -r ${SAGEMAKER_EXECUTIONROLE_ARN} \
+          -k "{\"region\": \"eu-west-1\", \"role\": \"${SAGEMAKER_EXECUTIONROLE_ARN}\"}"
+          -t "[{\"Key\":\"createdBy\", \"Value\":\"github-actions\"}]"
+      env:
+        SAGEMAKER_EXECUTIONROLE_ARN: ${{ secrets.SAGEMAKER_EXECUTIONROLE_ARN }}

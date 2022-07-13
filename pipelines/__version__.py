@@ -1,0 +1,6 @@
+__title__ = "pipelines"
+__description__ = "Sagemaker pipeline showcacse"
+__version__ = "0.0.1"
+__author__ = "Bostjan Bozic"
+__author_email__ = "bostjan.bozic@crayon.com"
+__license__ = "Apache 2.0"
