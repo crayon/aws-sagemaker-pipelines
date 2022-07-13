@@ -37,7 +37,7 @@ jobs:
         python run_pipeline.py \
           -n showcase.pipeline \
           -r ${SAGEMAKER_EXECUTIONROLE_ARN} \
-          -k "{\"region\": \"eu-west-1\", \"role\": \"${SAGEMAKER_EXECUTIONROLE_ARN}\"}"
+          -k "{\"region\": \"eu-west-1\", \"role\": \"${SAGEMAKER_EXECUTIONROLE_ARN}\"}" \
           -t "[{\"Key\":\"createdBy\", \"Value\":\"github-actions\"}]"
       env:
         SAGEMAKER_EXECUTIONROLE_ARN: ${{ secrets.SAGEMAKER_EXECUTIONROLE_ARN }}
