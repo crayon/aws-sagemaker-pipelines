@@ -28,11 +28,11 @@ Publishing and triggering AWS Sagemaker pipeline is done using `run_pipeline.py`
 * `--kwargs`: dictionary of keyword arguments to be used in pipeline definition. Following arguments are supported:
   * `region`: specifies AWS region of Sagemaker instance
   * `role`: ARN of execution role that will be used within each step of training pipeline
-  * `default_bucket` (optional): specify S3 bucket where training artifacts are to be stored(default to default Sagemaker bucket is used).
-  * `model_name` (optional): specify name of model artifact that is produced (default to "crayonShowcase").
-  * `model_package_group_name` (optional): specify name of model package group where model is going to be registered (default to "crayonShowcasePackageGroup").
-  * `pipeline_name` (optional): specify name of pipeline to be published (default to "crayonShowcasePipeline").
-  * `base_job_prefix` (optional): prefix for each job that will be triggered by pipeline steps (default to "crayonShowcase").
+  * `default_bucket` (optional): specify S3 bucket where training artifacts are to be stored(defaults to default Sagemaker bucket is used).
+  * `model_name` (optional): specify name of model artifact that is produced (defaults to "crayonShowcase").
+  * `model_package_group_name` (optional): specify name of model package group where model is going to be registered (defaults to "crayonShowcasePackageGroup").
+  * `pipeline_name` (optional): specify name of pipeline to be published (defaults to "crayonShowcasePipeline").
+  * `base_job_prefix` (optional): prefix for each job that will be triggered by pipeline steps (defaults to "crayonShowcase").
 
 Example for manually triggering pipeline publishing and running:
 ```sh
@@ -52,11 +52,11 @@ Deploying model to real-time inference, CloudFormation is used. Following steps 
 * deploy CloudFormation template together with adjusting parameters based on endpoint configuration file
 
 Generation of endpoint configuration uses `build_config_file.py` script in `deploy` folder to adjust `endpoint_config.json` based on user input. Script takes as an input following parameters:
-* `--endpoint-name` (optional): name of endpoint that is going to be deployed (default to "crayon-showcase-endpoint").
+* `--endpoint-name` (optional): name of endpoint that is going to be deployed (defaults to "crayon-showcase-endpoint").
 * `--model-execution-role`: ARN of execution role that will be used by deployed model
-* `--import-endpoint-config` (optional): file location of endpoint configuration file (default to "endpoint_config.json").
-* `--export-endpoint-config` (optional): file location of adjusted endpoint configuration file (default to "endpoint_config_adj.json").
-* `--log-level` (optional): Logging level of script, possible options 'DEBUG', 'INFO', 'WARN', 'ERROR', 'CRITICAL' (default to "INFO").
+* `--import-endpoint-config` (optional): file location of endpoint configuration file (defaults to "endpoint_config.json").
+* `--export-endpoint-config` (optional): file location of adjusted endpoint configuration file (defaults to "endpoint_config_adj.json").
+* `--log-level` (optional): Logging level of script, possible options 'DEBUG', 'INFO', 'WARN', 'ERROR', 'CRITICAL' (defaults to "INFO").
 
 Once adjusted endpoint configuration file is available, `aws cli` is used to package and deploy CloudFormation template. Packaging CloudFormation template requires S3 bucket to store artifact (you can use any S3 bucket available).
 
@@ -96,3 +96,19 @@ Following GitHub repository secrets are required:
 For additional parameter configuration, following must be adjusted:
 * add additional GitHub repository secret
 * adjust workflow definition to include those parameters together with appropriate script flags
+
+
+## Test inference
+For testing inference, simple script `predict.py` is available in `predict` folder. It generates pandas dataframe from provided CSV file and triggers prediction. Generated model in showcase pipeline only supports `text/csv` content type for input.
+
+Following arguments are available:
+* `endpoint-name` (optional): name of endpoint that is going to be deployed (defaults to "crayon-showcase-endpoint").
+* `region` (optional): specifies AWS region of Sagemaker instance (defaults to "eu-west-1").
+* `file-path` (optional): file location with prediction data (defaults to "sample_data.csv")
+
+Example for triggering prediction:
+```sh
+python predict/predict.py \
+  --endpoint-name crayon-showcase-endpoint \
+  --file-path predict/sample_data.csv
+```

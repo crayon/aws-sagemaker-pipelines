@@ -4,10 +4,10 @@ on:
     branches:
     - main
     - dev
-    paths-ignore:
-    - ".gitignore"
-    - "README.md"
-    - "images/**"
+    paths:
+    - ".github/**"
+    - "deploy/**"
+    - "pipelines/**"
   workflow_dispatch:
 jobs:
   publish_pipeline_and_train_model:
