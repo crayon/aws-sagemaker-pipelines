@@ -71,8 +71,10 @@ jobs:
       run: |
         python build_config_file.py \
           --model-package-group-name crayonShowcasePackageGroup \
-          --model-execution-role ${SAGEMAKER_EXECUTIONROLE_ARN}
+          --model-execution-role ${SAGEMAKER_EXECUTIONROLE_ARN} \
+          --datacapture-s3  ${SAGEMAKER_DEFAULT_S3_BUCKET}
       env:
+        SAGEMAKER_DEFAULT_S3_BUCKET: ${{ secrets.SAGEMAKER_DEFAULT_S3_BUCKET }}
         SAGEMAKER_EXECUTIONROLE_ARN: ${{ secrets.SAGEMAKER_EXECUTIONROLE_ARN }}
     - name: Generate CloudFormation template
       working-directory: ./deploy

@@ -32,9 +32,10 @@ def adjust_config_file(args, model_package_arn, endpoint_config):
         endpoint_config["Tags"] = {}
     
     additional_params = {
+        "DataCaptureUploadPath": f"s3://{args.datacapture_s3}/datacapture-{args.endpoint_name}",
+        "EndpointName": args.endpoint_name,
         "ModelPackageName": model_package_arn,
-        "ModelExecutionRoleArn": args.model_execution_role,
-        "EndpointName": args.endpoint_name
+        "ModelExecutionRoleArn": args.model_execution_role
     }
 
     return {
@@ -42,11 +43,15 @@ def adjust_config_file(args, model_package_arn, endpoint_config):
     }
 
 
-
-
-
 def main():
     parser = argparse.ArgumentParser("build_config_file")
+    parser.add_argument(
+        "--datacapture-s3",
+        type=str,
+        required=True,
+        dest="datacapture_s3",
+        help="S3 bucket for storing data capture."
+    ),
     parser.add_argument(
         "--endpoint-name",
         type=str,
