@@ -1,0 +1,62 @@
+Description: This template is built and deployed by the infrastructure pipeline as
+  required. It specifies the resources that need to be created to deploy AWS Sagemaker
+  endpoint.
+Parameters:
+  ModelExecutionRoleArn:
+    Type: String
+    Description: Execution role used for deploying the model.
+  ModelPackageName:
+    Type: String
+    Description: The trained Model Package Name
+  EndpointInstanceCount:
+    Type: Number
+    Description: Number of instances to launch for the endpoint.
+    MinValue: 1
+  EndpointInstanceType:
+    Type: String
+    Description: The ML compute instance type for the endpoint.
+  EndpointName:
+    Type: String
+    Description: Name of endpoint to be deployed.
+  EndpointConfigName:
+    Type: String
+    Description: Name of endpoint configuration to be used for deployment.
+  SamplingPercentage:
+    Type: Number
+    Description: The sampling percentage
+    MinValue: 0
+    MaxValue: 100
+Resources:
+  Model:
+    Type: AWS::SageMaker::Model
+    Properties:
+      Containers:
+      - ModelPackageName:
+          Ref: ModelPackageName
+      ExecutionRoleArn:
+        Ref: ModelExecutionRoleArn
+  EndpointConfig:
+    Type: AWS::SageMaker::EndpointConfig
+    Properties:
+      EndpointConfigName:
+        Ref: EndpointConfigName
+      ProductionVariants:
+      - InitialInstanceCount:
+          Ref: EndpointInstanceCount
+        InitialVariantWeight: 1.0
+        InstanceType:
+          Ref: EndpointInstanceType
+        ModelName:
+          Fn::GetAtt:
+          - Model
+          - ModelName
+        VariantName: AllTraffic
+  Endpoint:
+    Type: AWS::SageMaker::Endpoint
+    Properties:
+      EndpointName:
+        Ref: EndpointName
+      EndpointConfigName:
+        Fn::GetAtt:
+        - EndpointConfig
+        - EndpointConfigName
