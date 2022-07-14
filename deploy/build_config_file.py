@@ -34,8 +34,7 @@ def adjust_config_file(args, model_package_arn, endpoint_config):
     additional_params = {
         "ModelPackageName": model_package_arn,
         "ModelExecutionRoleArn": args.model_execution_role,
-        "EndpointName": args.endpoint_name,
-        "EndpointConfigName": f"{args.endpoint_name}-config"
+        "EndpointName": args.endpoint_name
     }
 
     return {

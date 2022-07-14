@@ -18,14 +18,6 @@ Parameters:
   EndpointName:
     Type: String
     Description: Name of endpoint to be deployed.
-  EndpointConfigName:
-    Type: String
-    Description: Name of endpoint configuration to be used for deployment.
-  SamplingPercentage:
-    Type: Number
-    Description: The sampling percentage
-    MinValue: 0
-    MaxValue: 100
 
 
 Resources:
@@ -39,7 +31,6 @@ Resources:
   EndpointConfig:
     Type: AWS::SageMaker::EndpointConfig
     Properties:
-      EndpointConfigName: !Ref EndpointConfigName
       ProductionVariants:
         - InitialInstanceCount: !Ref EndpointInstanceCount
           InitialVariantWeight: 1.0
