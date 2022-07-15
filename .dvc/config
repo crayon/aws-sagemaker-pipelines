@@ -1,0 +1,4 @@
+[core]
+    remote = abalone
+['remote "abalone"']
+    url = s3://bbozic/abalone

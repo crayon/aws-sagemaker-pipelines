@@ -29,6 +29,8 @@ Publishing and triggering AWS Sagemaker pipeline is done using `run_pipeline.py`
   * `region`: specifies AWS region of Sagemaker instance
   * `role`: ARN of execution role that will be used within each step of training pipeline
   * `default_bucket` (optional): specify S3 bucket where training artifacts are to be stored(defaults to default Sagemaker bucket is used).
+  * `repo_data_branch` (optional): specify git repository branch for correct data version (defaults to "main").
+  * `repo_data_path` (optional): specify path to data in git repository (defaults to "data/abalone-dataset.csv").
   * `model_name` (optional): specify name of model artifact that is produced (defaults to "crayonShowcase").
   * `model_package_group_name` (optional): specify name of model package group where model is going to be registered (defaults to "crayonShowcasePackageGroup").
   * `pipeline_name` (optional): specify name of pipeline to be published (defaults to "crayonShowcasePipeline").
