@@ -53,7 +53,9 @@ Deploying model to real-time inference, CloudFormation is used. Following steps 
 
 Generation of endpoint configuration uses `build_config_file.py` script in `deploy` folder to adjust `endpoint_config.json` based on user input. Script takes as an input following parameters:
 * `--endpoint-name` (optional): name of endpoint that is going to be deployed (defaults to "crayon-showcase-endpoint").
+* `--datacapture-s3`: S3 bucket used for data capture
 * `--model-execution-role`: ARN of execution role that will be used by deployed model
+* `--model-package-group-name`: specify name of model package group where model is registered (defaults to "crayonShowcasePackageGroup").
 * `--import-endpoint-config` (optional): file location of endpoint configuration file (defaults to "endpoint_config.json").
 * `--export-endpoint-config` (optional): file location of adjusted endpoint configuration file (defaults to "endpoint_config_adj.json").
 * `--log-level` (optional): Logging level of script, possible options 'DEBUG', 'INFO', 'WARN', 'ERROR', 'CRITICAL' (defaults to "INFO").
@@ -66,8 +68,9 @@ Example for manually deploying model:
 python -m pip install deploy/requirements.txt
 python deploy/build_config_file.py \
   --model-package-group-name crayonShowcasePackageGroup \
-  --import-endpoint-config deploy/endpoint_config.json \
   --model-execution-role ${SAGEMAKER_EXECUTIONROLE_ARN} \
+  --datacapture-s3 crayon-showcase \
+  --import-endpoint-config deploy/endpoint_config.json \
   --export-endpoint-config deploy/endpoint_config_adj.json
 
 # Package CloudFormation template
@@ -90,7 +93,7 @@ In addition to manually deploying all components, GitHub Actions workflow defini
 Following GitHub repository secrets are required:
 * `AWS_ACCESS_KEY_ID`: used to authenticate toward AWS account
 * `AWS_SECRET_ACCESS_KEY`: used to authenticate toward AWS account
-* `SAGEMAKER_DEFAULT_S3_BUCKET`: S3 bucket used to store generated CloudFormation templates
+* `SAGEMAKER_DEFAULT_S3_BUCKET`: S3 bucket used for inference data capture feature
 * `SAGEMAKER_EXECUTIONROLE_ARN`: ARN of execution role used across all parts of lifecycle
 
 For additional parameter configuration, following must be adjusted:
