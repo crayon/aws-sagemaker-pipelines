@@ -42,6 +42,8 @@ def get_pipeline(
     region,
     role=None,
     default_bucket=None,
+    repo_data_branch="main",
+    repo_data_path="data/abalone-dataset.csv",
     model_name="crayonShowcase",
     model_package_group_name="crayonShowcasePackageGroup",
     pipeline_name="crayonShowcasePipeline",
@@ -59,7 +61,8 @@ def get_pipeline(
     # Pipeline parameters
     eval_instance_count = ParameterInteger(name="evalInstanceCount", default_value=1)
     eval_instance_type = ParameterString(name="evalInstanceType", default_value="ml.m5.large")
-    prep_data_input_data = ParameterString(name="dataPrepInputData", default_value=f"s3://sagemaker-servicecatalog-seedcode-{region}/dataset/abalone-dataset.csv")
+    prep_data_input_data = ParameterString(name="dataPrepInputData", default_value=repo_data_path)
+    prep_data_input_repo_branch = ParameterString(name="dataPrepInputRepoBranch", default_value=repo_data_branch)
     prep_data_instance_count = ParameterInteger(name="dataPrepInstanceCount", default_value=1)
     prep_data_instance_type = ParameterString(name="dataPrepInstanceType", default_value="ml.m5.xlarge")
     register_inference_instance_type = ParameterString(name="registerInferenceInstanceType", default_value="ml.m5.large")
@@ -85,7 +88,8 @@ def get_pipeline(
         description="Split data to train, test and validation datasets.",
         code=os.path.join(base_dir, "preprocess.py"),
         job_arguments=[
-            "--input-data", prep_data_input_data
+            "--input-data", prep_data_input_data,
+            "--repo-branch", prep_data_input_repo_branch
         ],
         processor=prep_data_processor,
         outputs=[
@@ -263,6 +267,7 @@ def get_pipeline(
             eval_instance_count,
             eval_instance_type,
             prep_data_input_data,
+            prep_data_input_repo_branch,
             prep_data_instance_count,
             prep_data_instance_type,
             register_inference_instance_type,

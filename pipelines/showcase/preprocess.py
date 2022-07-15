@@ -1,9 +1,11 @@
-import argparse
-import logging
-import os
-import pathlib
+import subprocess
 
-import boto3
+subprocess.run(["python", "-m", "pip", "install", "dvc", "dvc[s3]"])
+
+
+import argparse
+import dvc.api
+import logging
 import numpy as np
 import pandas as pd
 
@@ -52,28 +54,25 @@ def merge_two_dicts(x, y):
 if __name__ == "__main__":
     logger.debug("Starting preprocessing.")
     parser = argparse.ArgumentParser()
-    parser.add_argument("--input-data", type=str, required=True)
+    parser.add_argument("--input-data", type=str, required=True, dest="input_data")
+    parser.add_argument("--repo-branch", type=str, required=True, dest="repo_branch")
     args = parser.parse_args()
 
     base_dir = "/opt/ml/processing"
-    pathlib.Path(f"{base_dir}/data").mkdir(parents=True, exist_ok=True)
-    input_data = args.input_data
-    bucket = input_data.split("/")[2]
-    key = "/".join(input_data.split("/")[3:])
-
-    logger.info("Downloading data from bucket: %s, key: %s", bucket, key)
-    fn = f"{base_dir}/data/abalone-dataset.csv"
-    s3 = boto3.resource("s3")
-    s3.Bucket(bucket).download_file(key, fn)
 
     logger.debug("Reading downloaded data.")
-    df = pd.read_csv(
-        fn,
-        header=None,
-        names=feature_columns_names + [label_column],
-        dtype=merge_two_dicts(feature_columns_dtype, label_column_dtype),
-    )
-    os.unlink(fn)
+    with dvc.api.open(
+        args.input_data,
+        repo="https://github.com/crayon/aws-sagemaker-pipelines.git",
+        rev=args.repo_branch,
+        remote="abalone"
+    ) as f:
+        df = pd.read_csv(
+            f,
+            header=None,
+            names=feature_columns_names + [label_column],
+            dtype=merge_two_dicts(feature_columns_dtype, label_column_dtype),
+        )
 
     logger.debug("Defining transformers.")
     numeric_features = list(feature_columns_names)
